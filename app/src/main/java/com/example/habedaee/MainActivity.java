@@ -3,7 +3,6 @@ package com.example.habedaee;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -17,7 +16,6 @@ import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.view.View;
@@ -75,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("Suggest a Song");
 
 // Set up the input
@@ -107,8 +105,15 @@ public class MainActivity extends AppCompatActivity {
                         String year=inputYear.getText().toString();
                         String list=inputList.getText().toString();
                         String creator=user.getUid();
+
                         SuggestionSong suggestion=new SuggestionSong(title,artist,year,list,creator);
-                        Model.get().getSongLists().get(2).getSongs().add(suggestion);
+                        if(model.containsSong(suggestion,list,MainActivity.this)){
+                            return;
+                        }
+                        if (model.containsSong(suggestion,"suggestions",MainActivity.this)){
+                            return;
+                        }
+                        Model.get().getSongLists().get(2).addSong(suggestion);
 
                         Map<String, Object> newData = new HashMap<>();
                         newData.put("title",title);
@@ -168,7 +173,17 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }else if(id==R.id.action_sort_year){
+            model.sort(0);
+        }else if(id==R.id.action_sort_artist){
+            model.sort(1);
+        }else if(id==R.id.action_sort_title){
+            model.sort(2);
         }
+
+        RecyclerView recyclerView =  findViewById(R.id.recycler_view);
+        recyclerView.getAdapter().notifyDataSetChanged();
+        viewPager.getAdapter().notifyDataSetChanged();
 
         return super.onOptionsItemSelected(item);
     }
@@ -223,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                                 //System.out.println(song);
                             }
                             model.getSongLists().get(index).setSongs(songs);
-                            model.getSongLists().get(index).sort();
+                            model.getSongLists().get(index).sortByYear();
 
                             RecyclerView recyclerView =  findViewById(R.id.recycler_view);
 

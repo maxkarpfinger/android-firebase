@@ -6,4 +6,16 @@
           android:title="@string/action_settings"
           android:orderInCategory="100"
           app:showAsAction="never"/>
+    <item android:id="@+id/action_sort_year"
+          android:title="@string/action_sort_year"
+          android:orderInCategory="100"
+          app:showAsAction="never"/>
+    <item android:id="@+id/action_sort_artist"
+          android:title="@string/action_sort_artist"
+          android:orderInCategory="100"
+          app:showAsAction="never"/>
+    <item android:id="@+id/action_sort_title"
+          android:title="@string/action_sort_title"
+          android:orderInCategory="100"
+          app:showAsAction="never"/>
 </menu>

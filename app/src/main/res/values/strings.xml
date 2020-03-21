@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">HabeDää</string>
     <string name="action_settings">Settings</string>
+    <string name="action_sort_year">Sort by Year</string>
+    <string name="action_sort_artist">Sort by Artist</string>
+    <string name="action_sort_title">Sort by Title</string>
 </resources>

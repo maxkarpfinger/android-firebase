@@ -2,6 +2,7 @@ package com.example.habedaee;
 
 import android.util.Log;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class Song {
     private static final String TAG ="myLog" ;
@@ -61,5 +62,15 @@ public class Song {
     @Override
     public String toString() {
         return "("+year+") "+artist+" - "+title;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(obj instanceof Song){
+            if(((Song) obj).title.toLowerCase().equals(title.toLowerCase())&&((Song) obj).artist.toLowerCase().equals(artist.toLowerCase())&&((Song) obj).year.toLowerCase().equals(year.toLowerCase())){
+                return true;
+            }
+        }
+        return false;
     }
 }

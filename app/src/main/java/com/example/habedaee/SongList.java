@@ -13,7 +13,7 @@ public class SongList {
         songs=new ArrayList<>();
     }
 
-    public void sort(){
+    public void sortByYear(){
         Collections.sort(songs, new Comparator<Song>() {
             @Override
             public int compare(Song song1, Song song2)
@@ -37,9 +37,58 @@ public class SongList {
         });
     }
 
+    public void sortByArtist(){
+        Collections.sort(songs, new Comparator<Song>() {
+            @Override
+            public int compare(Song song1, Song song2)
+            {
+                return  song1.getTitle().toLowerCase().compareTo(song2.getTitle().toLowerCase());
+            }
+        });
+        Collections.sort(songs, new Comparator<Song>() {
+            @Override
+            public int compare(Song song1, Song song2)
+            {
+                return  song1.getYear().toLowerCase().compareTo(song2.getYear().toLowerCase());
+            }
+        });
+        Collections.sort(songs, new Comparator<Song>() {
+            @Override
+            public int compare(Song song1, Song song2)
+            {
+                return  song1.getArtist().toLowerCase().compareTo(song2.getArtist().toLowerCase());
+            }
+        });
+    }
+
+    public void sortByTitle(){
+        Collections.sort(songs, new Comparator<Song>() {
+            @Override
+            public int compare(Song song1, Song song2)
+            {
+                return  song1.getYear().toLowerCase().compareTo(song2.getYear().toLowerCase());
+            }
+        });
+        Collections.sort(songs, new Comparator<Song>() {
+            @Override
+            public int compare(Song song1, Song song2)
+            {
+                return  song1.getArtist().toLowerCase().compareTo(song2.getArtist().toLowerCase());
+            }
+        });
+        Collections.sort(songs, new Comparator<Song>() {
+            @Override
+            public int compare(Song song1, Song song2)
+            {
+                return  song1.getTitle().toLowerCase().compareTo(song2.getTitle().toLowerCase());
+            }
+        });
+    }
+
+
     public void addSong(Song s){
         songs.add(s);
-        sort();
+        sortByYear();
     }
 
     public String getName() {
