@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 101;
     private static final String TAG ="myLog" ;
     private static String POSITION = "0";
+    private boolean isAdmin;
     private TabLayout mTabLayout;
     private Model model;
     private ViewPager viewPager;
@@ -45,25 +46,30 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        boolean firstLogin=false;
+
         model=Model.get();
         model.addList(new SongList("Oldies"));
         model.addList(new SongList("2000s"));
         model.addList(new SongList("Suggestions"));
-        List<AuthUI.IdpConfig> providers = Arrays.asList(
-                new AuthUI.IdpConfig.EmailBuilder().build()/*,
+
+        if(FirebaseAuth.getInstance().getCurrentUser()==null) {
+            List<AuthUI.IdpConfig> providers = Arrays.asList(
+                    new AuthUI.IdpConfig.EmailBuilder().build()/*,
                 new AuthUI.IdpConfig.PhoneBuilder().build(),
                 new AuthUI.IdpConfig.GoogleBuilder().build(),
                 new AuthUI.IdpConfig.FacebookBuilder().build(),
                 new AuthUI.IdpConfig.TwitterBuilder().build()*/);
 
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .build(),
-                RC_SIGN_IN);
-
-
+            startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setAvailableProviders(providers)
+                            .build(),
+                    RC_SIGN_IN);
+            firstLogin=true;
+        }
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -153,6 +159,13 @@ public class MainActivity extends AppCompatActivity {
 
         mTabLayout.setupWithViewPager(viewPager);
 
+        if(!firstLogin){
+            user = FirebaseAuth.getInstance().getCurrentUser();
+            db = FirebaseFirestore.getInstance();
+            requestSongs(db,"oldies",0);
+            requestSongs(db,"2000s",1);
+            requestSongs(db,"suggestions",2);
+        }
 
     }
 
@@ -171,7 +184,10 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_reload) {
+            requestSongs(db,"oldies",0);
+            requestSongs(db,"2000s",1);
+            requestSongs(db,"suggestions",2);
             return true;
         }else if(id==R.id.action_sort_year){
             model.sort(0);
@@ -179,6 +195,15 @@ public class MainActivity extends AppCompatActivity {
             model.sort(1);
         }else if(id==R.id.action_sort_title){
             model.sort(2);
+        }else if(id==R.id.action_logout){
+            AuthUI.getInstance()
+                    .signOut(this)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        public void onComplete(@NonNull Task<Void> task) {
+                            // ...
+                        }
+                    });
+            finish();
         }
 
         RecyclerView recyclerView =  findViewById(R.id.recycler_view);
@@ -269,19 +294,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         viewPager.setCurrentItem(savedInstanceState.getInt(POSITION));
-
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        AuthUI.getInstance()
-                .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // ...
-                    }
-                });
     }
 }
