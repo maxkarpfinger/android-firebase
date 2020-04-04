@@ -1,11 +1,11 @@
 package com.example.habedaee;
 
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.*;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 101;
     private static final String TAG ="myLog" ;
     private static String POSITION = "0";
-    private boolean isAdmin;
     private TabLayout mTabLayout;
     private Model model;
     private ViewPager viewPager;
@@ -204,6 +203,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
             finish();
+        }else if(id==R.id.action_copy){
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("current list", model.getSongLists().get(mTabLayout.getSelectedTabPosition()).toString());
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(MainActivity.this,"Copied current list to clip board",Toast.LENGTH_SHORT).show();
+            return true;
         }
 
         RecyclerView recyclerView =  findViewById(R.id.recycler_view);

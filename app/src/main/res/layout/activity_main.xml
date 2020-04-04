@@ -17,12 +17,13 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
+                android:background="?attr/colorPrimaryDark"
                 app:popupTheme="@style/AppTheme.PopupOverlay"/>
         <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimaryDark"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -31,6 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" android:visibility="visible"
+            android:background="?attr/colorPrimary"
             tools:visibility="visible"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

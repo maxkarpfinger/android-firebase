@@ -1,5 +1,7 @@
 package com.example.habedaee;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -105,5 +107,16 @@ public class SongList {
 
     public void setSongs(ArrayList<Song> songs) {
         this.songs = songs;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder=new StringBuilder();
+        for(Song s:songs){
+            stringBuilder.append(s);
+            stringBuilder.append("\n");
+        }
+        return stringBuilder.toString();
     }
 }
