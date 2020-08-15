@@ -11,16 +11,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class SongListFragment extends Fragment {
+public class SuggestionFragment extends Fragment {
 
-    View view;
-    RecyclerView recyclerView;
-    ArrayList<Song> arrayList;
-    MySongAdapter adapter;
-    int page;
+    private View view;
+    private RecyclerView recyclerView;
+    private ArrayList<Song> arrayList;
+    private SuggestionAdapter adapter;
+    private int page;
 
-    public static SongListFragment newInstance(int someInt) {
-        SongListFragment myFragment = new SongListFragment();
+    public static SuggestionFragment newInstance(int someInt) {
+        SuggestionFragment myFragment = new SuggestionFragment();
         Bundle args = new Bundle();
         args.putInt("someInt", someInt);
         myFragment.setArguments(args);
@@ -29,21 +29,17 @@ public class SongListFragment extends Fragment {
 
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_songlist, container, false);
+        view = inflater.inflate(R.layout.fragment_suggestions, container, false);
         page=getArguments().getInt("someInt", 0);
-        recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView = view.findViewById(R.id.suggestion_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         arrayList = new ArrayList<>();
 
-        adapter = new MySongAdapter(Model.get().getSongLists().get(page).getSongs());
+        adapter = new SuggestionAdapter(Model.get().getSongLists().get(page).getSongs(),getActivity());
 
         recyclerView.setAdapter(adapter);
         return view;
     }
-
-
-
-
 }

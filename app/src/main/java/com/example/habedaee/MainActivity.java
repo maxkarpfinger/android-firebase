@@ -1,6 +1,9 @@
 package com.example.habedaee;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.*;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
@@ -71,6 +74,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_main);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create channel to show notifications.
+            String channelId  = getString(R.string.default_notification_channel_id);
+            String channelName = getString(R.string.default_notification_channel_name);
+            NotificationManager notificationManager =
+                    getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(new NotificationChannel(channelId,
+                    channelName, NotificationManager.IMPORTANCE_LOW));
+        }
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -111,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                         String list=inputList.getText().toString();
                         String creator=user.getUid();
 
-                        SuggestionSong suggestion=new SuggestionSong(title,artist,year,list,creator);
+                        SuggestionSong suggestion=new SuggestionSong(title,artist,year,list,creator,"false");
                         if(model.containsSong(suggestion,list,MainActivity.this)){
                             return;
                         }
@@ -151,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         fragments=new ArrayList<>();
         fragments.add(SongListFragment.newInstance(0));
         fragments.add(SongListFragment.newInstance(1));
-        fragments.add(SongListFragment.newInstance(2));
+        fragments.add(SuggestionFragment.newInstance(2));
 
         FragmentAdapter pagerAdapter = new FragmentAdapter(getSupportFragmentManager(), getApplicationContext(), fragments);
         viewPager.setAdapter(pagerAdapter);
@@ -259,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
                                     continue;
                                 }
                                 if(index==2){
-                                    SuggestionSong song=new SuggestionSong(document.get("title").toString(), document.get("artist").toString(), document.get("year").toString(),document.get("list").toString(),document.get("creator").toString());
+                                    SuggestionSong song=new SuggestionSong(document.get("title").toString(), document.get("artist").toString(), document.get("year").toString(),document.get("list").toString(),document.get("creator").toString(),document.get("rejected").toString());
                                     songs.add(song);
                                 }else {
                                     Song song = new Song(document.get("title").toString(), document.get("artist").toString(), document.get("year").toString());
