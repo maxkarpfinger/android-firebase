@@ -3,12 +3,12 @@ package com.example.habedaee;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.*;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -87,6 +87,14 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        FloatingActionButton fab_search = findViewById(R.id.fab_search);
+        fab_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setUpDialog();
+            }
+        });
 
         final FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -179,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
             requestSongs(db,"2000s",1);
             requestSongs(db,"suggestions",2);
         }
-
     }
 
     @Override
@@ -258,6 +265,42 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void setUpDialog(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("search");
+        builder.setIcon(android.R.drawable.ic_menu_search);
+        final AutoCompleteTextView input=new AutoCompleteTextView(MainActivity.this);
+        input.setHint("Name");
+        input.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                input.setText("");
+            }
+        });
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, model.getSearchStrings());
+        input.setAdapter(adapter);
+        LinearLayout ll=new LinearLayout(MainActivity.this);
+        ll.setOrientation(LinearLayout.VERTICAL);
+        ll.addView(input);
+        builder.setView(ll);
+        input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                input.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        InputMethodManager imm = (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        Objects.requireNonNull(imm).showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                });
+            }
+        });
+        input.setEms(1);
+        input.requestFocus();
+        builder.show();
+    }
+
+
 
 
     private void requestSongs(FirebaseFirestore db,String name,final int index){
@@ -299,7 +342,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-
+        StringAsyncTask task = new StringAsyncTask();
+        task.doInBackground(null);
     }
 
 

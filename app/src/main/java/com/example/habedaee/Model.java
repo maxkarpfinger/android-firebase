@@ -6,12 +6,14 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class Model {
-    private ArrayList<SongList> songLists;
+    private final ArrayList<SongList> songLists;
+    private String[] searchStrings;
 
     private static Model model;
 
     public Model(){
         songLists=new ArrayList<>();
+        searchStrings = new String[0];
     }
 
     public static Model get(){
@@ -49,11 +51,29 @@ public class Model {
         for(SongList list:songLists){
             if(list.getName().equals(listId)) {
                 if (list.getSongs().contains(song)) {
-                    Toast.makeText(context,list+ " already contains "+song.toString(),Toast.LENGTH_SHORT);
+                    Toast.makeText(context,list+ " already contains "+song.toString(),Toast.LENGTH_SHORT).show();
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    void createStrings(){
+        ArrayList<String> collection = new ArrayList<>();
+        for(SongList list:songLists){
+            for(Song song:list.getSongs()){
+               collection.add(song.getArtist()+" "+song.getTitle());
+            }
+        }
+        searchStrings = new String[collection.size()];
+        int counter = 0;
+        for(String s: collection){
+            searchStrings[counter++]=s;
+        }
+    }
+
+    public String[] getSearchStrings() {
+        return searchStrings;
     }
 }
